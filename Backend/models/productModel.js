@@ -26,10 +26,6 @@ const productSchema = new mongoose.Schema({
         required :[true, 'subcategory filed is required'],
         alias: 'subcategory'
     },
-    sizes:{
-        type:Array,
-        required :[true, 'Sizes filed is required']
-    },
     bestseller:{
         type:Boolean,
     },
