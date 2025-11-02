@@ -13,8 +13,8 @@ const Add = ({ token }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("men");
-  const [subcategory, setSubcategory] = useState("Topwear");
+  const [category, setCategory] = useState("skincare");
+  const [subcategory, setSubcategory] = useState("uvdoux"); // now this means brand
   const [bestseller, setBestseller] = useState(false);
   const [sizes, setSizes] = useState([]);
 
@@ -32,8 +32,8 @@ const Add = ({ token }) => {
       formData.append("name", name);
       formData.append("description", description);
       formData.append("price", price);
-      formData.append("category", category);
-      formData.append("subCategory", subcategory); // Ensure this matches the backend schema
+      formData.append("category", category); // type: skincare, makeup, etc.
+      formData.append("subCategory", subcategory); // brand: uvdoux, technic, etc.
       formData.append("bestseller", bestseller);
       formData.append("sizes", JSON.stringify(sizes));
 
@@ -42,7 +42,7 @@ const Add = ({ token }) => {
       image3 && formData.append("image3", image3);
       image4 && formData.append("image4", image4);
 
-      const response = await axios.post(backendUrl + "/api/product/add", formData, {
+      const response = await axios.post(`${backendUrl}/api/product/add`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           token: token,
@@ -59,8 +59,8 @@ const Add = ({ token }) => {
         setImage3(false);
         setImage4(false);
         setPrice("");
-        setCategory("men");
-        setSubcategory("Topwear");
+        setCategory("skincare");
+        setSubcategory("uvdoux");
         setBestseller(false);
         setSizes([]);
       } else {
@@ -70,14 +70,6 @@ const Add = ({ token }) => {
       console.log(error);
       toast.error(error.response?.data?.message || error.message);
     }
-  };
-
-  const toggleSize = (size) => {
-    setSizes((prev) =>
-      prev.includes(size)
-        ? prev.filter((item) => item !== size)
-        : [...prev, size]
-    );
   };
 
   return (
@@ -113,13 +105,13 @@ const Add = ({ token }) => {
 
       {/* Product Name */}
       <div className="w-full">
-        <p className="mb-2">Product name</p>
+        <p className="mb-2">Product Name</p>
         <input
           onChange={(e) => setName(e.target.value)}
           value={name}
           className="w-full max-w-[500px] py-2 border rounded-lg"
           type="text"
-          placeholder="Type here"
+          placeholder="Enter product name"
           required
         />
       </div>
@@ -131,36 +123,43 @@ const Add = ({ token }) => {
           onChange={(e) => setDescription(e.target.value)}
           value={description}
           className="w-full max-w-[500px] py-2 border rounded-lg"
-          placeholder="Write content here"
+          placeholder="Write product description here"
           required
         />
       </div>
 
-      {/* Category, Subcategory, and Price */}
+      {/* Category (Type) and Brand */}
       <div className="flex flex-col sm:flex-row gap-2 w-full sm:gap-8">
         <div>
-          <p className="mb-2">Product Category</p>
+          <p className="mb-2">Product Type (Category)</p>
           <select
             className="w-full px-3 py-2 border rounded-lg"
             onChange={(e) => setCategory(e.target.value)}
             value={category}
           >
-            <option value="men">Men</option>
-            <option value="women">Women</option>
-            <option value="kids">Kids</option>
+            <option value="skincare">Skincare</option>
+            <option value="makeup">Makeup</option>
+            <option value="haircare">Haircare</option>
+            <option value="body">Body</option>
+            <option value="appliances">Appliances</option>
+            <option value="accessories">Accessories</option>
           </select>
         </div>
 
         <div>
-          <p className="mb-2">Sub Category</p>
+          <p className="mb-2">Brand</p>
           <select
             className="w-full px-3 py-2 border rounded-lg"
             onChange={(e) => setSubcategory(e.target.value)}
             value={subcategory}
           >
-            <option value="Topwear">Topwear</option>
-            <option value="Bottomwear">Bottomwear</option>
-            <option value="Winterwear">Winterwear</option>
+            <option value="uvdoux">UV Doux</option>
+            <option value="technic">Technic</option>
+            <option value="mamaearth">Mamaearth</option>
+            <option value="cetaphil">Cetaphil</option>
+            <option value="dermaco">Derma Co.</option>
+            <option value="lagirl">L.A. Girl</option>
+            <option value="lotus">Lotus</option>
           </select>
         </div>
 
@@ -170,29 +169,10 @@ const Add = ({ token }) => {
             onChange={(e) => setPrice(e.target.value)}
             value={price}
             className="w-full px-3 py-2 sm:w-[120px] border rounded-lg"
-            type="Number"
+            type="number"
             placeholder="25"
+            required
           />
-        </div>
-      </div>
-
-      {/* Product Sizes */}
-      <div>
-        <p className="mb-2">Product sizes</p>
-        <div className="flex gap-3">
-          {["S", "M", "L", "XL", "XXL"].map((size) => (
-            <div
-              key={size}
-              onClick={() => toggleSize(size)}
-              className={`w-12 h-12 flex items-center justify-center cursor-pointer rounded-lg border transition-colors ${
-                sizes.includes(size)
-                  ? "bg-pink-100 border-pink-400"
-                  : "bg-slate-200 border-gray-300"
-              }`}
-            >
-              <p className="text-sm font-semibold">{size}</p>
-            </div>
-          ))}
         </div>
       </div>
 

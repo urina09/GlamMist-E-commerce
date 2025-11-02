@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { backendUrl, currency } from "../App";
-import { toast } from "react-toastify"; // Corrected import
+import { toast } from "react-toastify";
 import { assets } from "../assets/assets";
 
 const Order = ({ token }) => {
   const [orders, setOrders] = useState([]);
 
   const fetchAllOrders = async () => {
-    if (!token) {
-      return null;
-    }
+    if (!token) return;
+
     try {
       const response = await axios.post(
         backendUrl + "/api/order/list",
@@ -61,50 +60,31 @@ const Order = ({ token }) => {
             <img className="w-12" src={assets.parcel_icon} alt="" />
             <div>
               <div>
-                {order.items.map((item, index) => {
-                  // Log to inspect the item structure
-                  console.log("Item:", item);
-
-                  const itemName = item.name
-                    ? item.name
-                    : "Item name not available";
-
-                  if (index === order.items.length - 1) {
-                    return (
-                      <p className="py-0.5" key={index}>
-                        {itemName} x {item.quantity} <span>{item.size}</span>
-                      </p>
-                    );
-                  } else {
-                    return (
-                      <p className="py-0.5" key={index}>
-                        {itemName} x {item.quantity} <span>{item.size},</span>
-                      </p>
-                    );
-                  }
+                {order.items.map((item, idx) => {
+                  const itemName = item.name || "Item name not available";
+                  return (
+                    <p className="py-0.5" key={idx}>
+                      {itemName} x {item.quantity}
+                    </p>
+                  );
                 })}
               </div>
-              {/* Accessing order.address inside the map */}
               <p className="mt-3 mb-2 font-medium">
-                {order.address.firstName + " " + order.address.lastName}
+                {order.address.firstName} {order.address.lastName}
               </p>
               <div>
-              <p>{order.address.email + ",  "}</p>
+                <p>{order.address.email},</p>
                 <p>
-                  {order.address.city +
-                    ",  " +
-                    order.address.state}
+                  {order.address.city}, {order.address.state}
                 </p>
-                <p>{order.address.phone + ",  "}</p>
+                <p>{order.address.phone}</p>
               </div>
             </div>
             <div>
-              <p className="text-sm sm:text-[15px]">
-                Item:{order.items.length}
-              </p>
-              <p className="mt-3">Method:{order.paymentMethod}</p>
-              <p>Payment:{order.payment ? "Done" : "Pending"}</p>
-              <p>Date:{new Date(order.date).toLocaleDateString()}</p>
+              <p className="text-sm sm:text-[15px]">Item: {order.items.length}</p>
+              <p className="mt-3">Method: {order.paymentMethod}</p>
+              <p>Payment: {order.payment ? "Done" : "Pending"}</p>
+              <p>Date: {new Date(order.date).toLocaleDateString()}</p>
             </div>
             <p className="text-sm sm:text-[15px]">
               {currency}
